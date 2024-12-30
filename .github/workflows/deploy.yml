@@ -42,6 +42,8 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: |
             pages project list
+            pages deployment list
+            pages project deploy ./dist --project-name lab --branch main
 
   deploy:
 
