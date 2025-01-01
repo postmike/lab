@@ -59,7 +59,8 @@ jobs:
             mv "./dist2/files/javascript.ipynb" "./dist2/files/kernel_examples"
             mv "./dist2/files/p5.ipynb"         "./dist2/files/kernel_examples"
             mv "./dist2/files/python.ipynb"     "./dist2/files/kernel_examples"
-            ls ./dist2
+            ls "./dist2/files"
+            ls "./dist2/files/kernel_examples"
             echo "*** end of pre commands ***"
           command: |
             pages project list
