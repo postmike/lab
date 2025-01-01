@@ -27,7 +27,13 @@ jobs:
 
       - name: Build the JupyterLite site
         run: |
+          echo "*****************************************************"
+          cat README.md 
+          echo "*****************************************************"
           cp README.md content
+          echo "*****************************************************"
+          ls
+          echo "*****************************************************"
           jupyter lite build --contents content --output-dir dist
 
       - name: Upload artifact
@@ -69,7 +75,10 @@ jobs:
             sed -i 's/\("path": "\)\(p5.ipynb"\)/\1demo\/\2/'         "./dist2/api/contents/all.json"
             sed -i 's/\("path": "\)\(python.ipynb"\)/\1demo\/\2/'     "./dist2/api/contents/all.json"
             sed -i 's/\("path": "\)\(README.md"\)/\1demo\/\2/'        "./dist2/api/contents/all.json"
-            
+
+            ls "./dist2/api/contents"
+            cat "./dist2/api/contents/all.json"
+
             # Add user notebooks to the root folder
 
             # NOT DONE YET
