@@ -25,6 +25,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: "postmike/ObsidianVault"
           path: "ObsidianVault"
+          ref: "main"
           sparse-checkout: |
             "./README.md"
           sparse-checkout-cone-mode: false
