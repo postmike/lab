@@ -44,28 +44,25 @@ jobs:
           echo "*****************************************************"
           ls ./dist
 
-      # https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/
+      # https://github.com/cloudflare/wrangler-action
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
-          # valid inputs are:
-          #   ['apiToken', 'accountId', 'quiet', 'environment', 'workingDirectory', 'wranglerVersion',
-          #   'secrets', 'preCommands', 'postCommands', 'command', 'vars', 'packageManager', 'gitHubToken']
-#          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-#          workingDirectory: "./dist"
           command: |
             pages project list
             pages deploy "./dist" --project-name "lab" --branch main
             pages deployment list --project-name "lab"
-
-
-
-
-
-
-
+          postCommands: |
+            echo "*** post commands ***"
+            # Re-arrange the website files
+            mkdir -p "./dist/files/kernel_examples"
+            mv "./dist/files/README.md"        "./dist/files/kernel_examples"
+            mv "./dist/files/javascript.ipynb" "./dist/files/kernel_examples"
+            mv "./dist/files/p5.ipynb"         "./dist/files/kernel_examples"
+            mv "./dist/files/python.ipynb"     "./dist/files/kernel_examples"
+            echo "*** end of post commands ***"
 
   deploy:
 
