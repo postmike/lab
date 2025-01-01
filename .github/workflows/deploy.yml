@@ -43,9 +43,9 @@ jobs:
           token: ${{ secrets.OBSIDIAN_PERSONAL_ACCESS_TOKEN }}
           repository: "postmike/ObsidianVault"
           path: "ObsidianVault"
-          ref: "main"
+          # ref: "main"
           sparse-checkout: |
-            "./README.md"
+            "README.md"
           sparse-checkout-cone-mode: false
 
       - name: Create directory for copied files
