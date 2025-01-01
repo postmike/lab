@@ -16,8 +16,26 @@ jobs:
     
     steps:
     
+      - name: See initial environment
+        run: |
+          echo "******************** pwd *********************************"
+          pwd
+          echo "******************** ls *********************************"
+          ls
+          echo "*****************************************************"
+
       - name: Checkout
         uses: actions/checkout@v4
+
+
+      - name: See environment after checkout
+        run: |
+          echo "******************** pwd *********************************"
+          pwd
+          echo "******************** ls *********************************"
+          ls
+          echo "*****************************************************"
+
 
       - name: Copy my notebooks from my private repo
         uses: actions/checkout@v4
