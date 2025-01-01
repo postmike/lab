@@ -59,7 +59,14 @@ jobs:
             # Re-arrange the website files
             # Move default demo notebooks from root folder to "demo" subfolder
             mkdir -p "./dist2/api/contents/demo"
-            mv "./dist2/api/contents/all.json" "./dist2/api/contents/demo"
+#            mv "./dist2/api/contents/all.json" "./dist2/api/contents/demo"
+            # Replace paths:
+            #   from:       "path": "README.md",
+            #     to:       "path": "demo/README.md",
+            sed -i 's/\("path": "\)\(javascript.ipynb"\)/\1demo\/\2/' "./dist2/api/contents/all.json"
+            sed -i 's/\("path": "\)\(p5.ipynb"\)/\1demo\/\2/'         "./dist2/api/contents/all.json"
+            sed -i 's/\("path": "\)\(python.ipynb"\)/\1demo\/\2/'     "./dist2/api/contents/all.json"
+            sed -i 's/\("path": "\)\(README.md"\)/\1demo\/\2/'        "./dist2/api/contents/all.json"
             
             # Add user notebooks to the root folder
 
