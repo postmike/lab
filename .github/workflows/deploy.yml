@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          repository: postmike\ObsidianVault
+          repository: postmike/ObsidianVault
           path: ""
           sparse-checkout: |
             Projects\attachments\fmcw\scripts\radar_model\fmcw_calculator_v1.2.ipynb
