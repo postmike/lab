@@ -19,6 +19,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Copy my notebooks from my private repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: postmike/ObsidianVault
+          # path: ""
+          sparse-checkout: |
+            README.md
+          sparse-checkout-cone-mode: false
+
+      - name: Create directory for copied files
+        run: |
+          mkdir my_notebooks
+          ls
+          # mv private-repo-files/*.json my_notebooks/
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -27,22 +43,6 @@ jobs:
       - name: Install the dependencies
         run: |
           python -m pip install -r requirements.txt
-
-      - name: Copy my notebooks from my private repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: postmike/ObsidianVault
-          path: ""
-          sparse-checkout: |
-            "./README.md"
-          sparse-checkout-cone-mode: false
-
-      - name: Create directory for copied files
-        run: |
-          mkdir my_notebooks
-          ls
-          # mv private-repo-files/*.json my_notebooks/
 
       - name: Build the JupyterLite site
         run: |
