@@ -57,9 +57,11 @@ jobs:
             cp -r "./dist" "./dist2"
 
             # Re-arrange the website files
+
             # Move default demo notebooks from root folder to "demo" subfolder
             mkdir -p "./dist2/api/contents/demo"
-#            mv "./dist2/api/contents/all.json" "./dist2/api/contents/demo"
+            # mv "./dist2/api/contents/all.json" "./dist2/api/contents/demo"
+
             # Replace paths:
             #   from:       "path": "README.md",
             #     to:       "path": "demo/README.md",
