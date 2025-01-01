@@ -35,6 +35,15 @@ jobs:
         with:
           path: ./dist
 
+      - name: Show Directory Structure
+        run: |
+          echo "*****************************************************"
+          pwd
+          echo "*****************************************************"
+          ls
+          echo "*****************************************************"
+          ls ./dist
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
@@ -42,7 +51,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: |
             pages project list
-            pages project deploy ./dist --project-name lab --branch main
+            pages project deploy "./dist" --project-name lab --branch main
             pages deployment list --project-name lab
 
   deploy:
