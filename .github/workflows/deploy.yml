@@ -44,8 +44,8 @@ jobs:
           repository: "postmike/ObsidianVault"
           path: "ObsidianVault"
           sparse-checkout: |
-            README.md
-            Projects/attachments/fmcw/scripts/radar_model/fmcw_calculator_v1.2.ipynb
+            "Projects/attachments/fmcw/scripts/radar_model/fmcw_calculator_v1.2.ipynb"
+            "Projects/attachments/fmcw/scripts/chirp_vhdl_generator/chirp_table_generator_for_vhdl.ipynb"
           sparse-checkout-cone-mode: false
 
       - name: Create directory for copied files
