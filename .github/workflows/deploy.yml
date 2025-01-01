@@ -44,15 +44,26 @@ jobs:
           echo "*****************************************************"
           ls ./dist
 
+      # https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          projectName: "lab"
+          directory: "./dist"
           command: |
             pages project list
-            pages project deploy "./dist" --project-name lab --branch main
+#            pages project deploy "./dist" --project-name lab --branch main
             pages deployment list --project-name lab
+
+
+
+
+
+
+
 
   deploy:
 
