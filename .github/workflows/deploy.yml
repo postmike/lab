@@ -11,8 +11,11 @@ on:
 jobs:
 
   build:
+
     runs-on: ubuntu-latest
+    
     steps:
+    
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -24,6 +27,21 @@ jobs:
       - name: Install the dependencies
         run: |
           python -m pip install -r requirements.txt
+
+      - name: Copy my notebooks from my private repo
+        with:
+          token: ${{ GITHUB_TOKEN }}
+          repository: postmike\ObsidianVault
+          path: ""
+          sparse-checkout: |
+            Projects\attachments\fmcw\scripts\radar_model\fmcw_calculator_v1.2.ipynb
+          sparse-checkout-cone-mode: false
+
+      - name: Create directory for copied files
+        run: |
+          mkdir my_notebooks
+          ls
+          # mv private-repo-files/*.json my_notebooks/
 
       - name: Build the JupyterLite site
         run: |
@@ -85,27 +103,27 @@ jobs:
             
             echo "*** end of pre commands ***"
           command: |
-            pages project list
+            # pages project list
             pages deploy "./dist2" --project-name "lab" --branch main
-            pages deployment list --project-name "lab"
+            # pages deployment list --project-name "lab"
 
-  deploy:
-
-    needs: build
-
-    if: github.ref == 'refs/heads/main'
-
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+#  deploy:
+#
+#    needs: build
+#
+#    if: github.ref == 'refs/heads/main'
+#
+#    permissions:
+#      pages: write
+#      id-token: write
+#
+#    environment:
+#      name: github-pages
+#      url: ${{ steps.deployment.outputs.page_url }}
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Deploy to GitHub Pages
+#        id: deployment
+#        uses: actions/deploy-pages@v4
