@@ -22,7 +22,7 @@ jobs:
       - name: Copy my notebooks from my private repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.OBSIDIAN_PERSONAL_ACCESS_TOKEN }}
           repository: "postmike/ObsidianVault"
           path: "ObsidianVault"
           ref: "main"
