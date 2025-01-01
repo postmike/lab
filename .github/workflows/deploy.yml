@@ -52,30 +52,24 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           preCommands: |
             echo "*** pre commands ***"
-            cp -r "./dist" "./dist2"            # make a copy of the website to modify it
+            
+            # Make a copy of the website to modify it and to add the user notebooks
+            cp -r "./dist" "./dist2"
+
             # Re-arrange the website files
-            mkdir -p "./dist2/files/kernel_examples"
-            mv "./dist2/files/README.md"        "./dist2/files/kernel_examples"
-            mv "./dist2/files/javascript.ipynb" "./dist2/files/kernel_examples"
-            mv "./dist2/files/p5.ipynb"         "./dist2/files/kernel_examples"
-            mv "./dist2/files/python.ipynb"     "./dist2/files/kernel_examples"
-            ls "./dist2/files"
-            ls "./dist2/files/kernel_examples"
+            # Move default demo notebooks from root folder to "demo" subfolder
+            mkdir -p "./dist2/api/contents/demo"
+            mv "./dist2/api/contents/all.json" "./dist2/api/contents/demo"
+            
+            # Add user notebooks to the root folder
+
+            # NOT DONE YET
+            
             echo "*** end of pre commands ***"
           command: |
             pages project list
             pages deploy "./dist2" --project-name "lab" --branch main
             pages deployment list --project-name "lab"
-#          postCommands: |
-#            echo "*** post commands ***"
-#            # Re-arrange the website files
-#            mkdir -p "./dist2/files/kernel_examples"
-#            mv "./dist2/files/README.md"        "./dist2/files/kernel_examples"
-#            mv "./dist2/files/javascript.ipynb" "./dist2/files/kernel_examples"
-#            mv "./dist2/files/p5.ipynb"         "./dist2/files/kernel_examples"
-#            mv "./dist2/files/python.ipynb"     "./dist2/files/kernel_examples"
-#            ls ./dist2
-#            echo "*** end of post commands ***"
 
   deploy:
 
