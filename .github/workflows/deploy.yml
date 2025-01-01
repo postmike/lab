@@ -50,19 +50,31 @@ jobs:
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          preCommands: |
+            echo "*** pre commands ***"
+            cp -r "./dist" "./dist2"            # make a copy of the website to modify it
+            # Re-arrange the website files
+            mkdir -p "./dist2/files/kernel_examples"
+            mv "./dist2/files/README.md"        "./dist2/files/kernel_examples"
+            mv "./dist2/files/javascript.ipynb" "./dist2/files/kernel_examples"
+            mv "./dist2/files/p5.ipynb"         "./dist2/files/kernel_examples"
+            mv "./dist2/files/python.ipynb"     "./dist2/files/kernel_examples"
+            ls ./dist2
+            echo "*** end of pre commands ***"
           command: |
             pages project list
-            pages deploy "./dist" --project-name "lab" --branch main
+            pages deploy "./dist2" --project-name "lab" --branch main
             pages deployment list --project-name "lab"
-          postCommands: |
-            echo "*** post commands ***"
-            # Re-arrange the website files
-            mkdir -p "./dist/files/kernel_examples"
-            mv "./dist/files/README.md"        "./dist/files/kernel_examples"
-            mv "./dist/files/javascript.ipynb" "./dist/files/kernel_examples"
-            mv "./dist/files/p5.ipynb"         "./dist/files/kernel_examples"
-            mv "./dist/files/python.ipynb"     "./dist/files/kernel_examples"
-            echo "*** end of post commands ***"
+#          postCommands: |
+#            echo "*** post commands ***"
+#            # Re-arrange the website files
+#            mkdir -p "./dist2/files/kernel_examples"
+#            mv "./dist2/files/README.md"        "./dist2/files/kernel_examples"
+#            mv "./dist2/files/javascript.ipynb" "./dist2/files/kernel_examples"
+#            mv "./dist2/files/p5.ipynb"         "./dist2/files/kernel_examples"
+#            mv "./dist2/files/python.ipynb"     "./dist2/files/kernel_examples"
+#            ls ./dist2
+#            echo "*** end of post commands ***"
 
   deploy:
 
