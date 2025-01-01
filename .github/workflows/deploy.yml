@@ -48,15 +48,17 @@ jobs:
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          # valid inputs are:
+          #   ['apiToken', 'accountId', 'quiet', 'environment', 'workingDirectory', 'wranglerVersion',
+          #   'secrets', 'preCommands', 'postCommands', 'command', 'vars', 'packageManager', 'gitHubToken']
+#          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          projectName: "lab"
-          directory: "./dist"
-#          command: |
-#            pages project list
-#            # pages project deploy "./dist" --project-name lab --branch main
-#            pages deployment list --project-name lab
+#          workingDirectory: "./dist"
+          command: |
+            pages project list
+            pages deploy "./dist" --project-name "lab" --branch main
+            pages deployment list --project-name "lab"
 
 
 
