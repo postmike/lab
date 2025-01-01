@@ -23,16 +23,21 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          repository: postmike/ObsidianVault
-          # path: ""
+          repository: "postmike/ObsidianVault"
+          path: "ObsidianVault"
           sparse-checkout: |
-            README.md
+            "./README.md"
           sparse-checkout-cone-mode: false
 
       - name: Create directory for copied files
         run: |
+          echo "*****************************************************"
           mkdir my_notebooks
+          echo "******************** ls *********************************"
           ls
+          echo "****************** ls ./ObsidianVault ***********************************"
+          ls ./ObsidianVault
+          echo "*****************************************************"
           # mv private-repo-files/*.json my_notebooks/
 
       - name: Setup Python
