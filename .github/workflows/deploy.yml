@@ -35,7 +35,7 @@ jobs:
           ls
           echo "*****************************************************"
 
-      - name: Ceckout my notebooks from my private repo
+      - name: Checkout my private notebooks
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.OBSIDIAN_PERSONAL_ACCESS_TOKEN }}
@@ -46,11 +46,32 @@ jobs:
             Projects/attachments/fmcw/scripts/chirp_vhdl_generator/chirp_table_generator_for_vhdl.ipynb
           sparse-checkout-cone-mode: false
 
-      - name: Setup JupyterLite "content" folder
-        run: |
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
+      - name: Install the dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip list
+
+      - name: Build the PUBLIC version of JupyterLite site
+        run: |
+          cp README.md content
+          jupyter lite build --contents "./content" --output-dir "./dist"
+
+      - name: Upload PUBLIC artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+
+      - name: Setup JupyterLite content for PRIVATE version of JupyterLite site 
+        run: |
           # Re-arrange default demo notebooks to move them from the root to a subfolder
           mkdir -p "./content/demo"
+          mv "./README.md"                "./content/demo"
           mv "./content/javascript.ipynb" "./content/demo"
           mv "./content/p5.ipynb"         "./content/demo"
           mv "./content/python.ipynb"     "./content/demo"
@@ -65,35 +86,10 @@ jobs:
           ls -alR ./content
           echo "*****************************************************"
 
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install the dependencies
+      - name: Build the PRIVATE version of JupyterLite site
         run: |
-          python -m pip install -r requirements.txt
-
-      - name: Build the JupyterLite site
-        run: |
-          cp README.md ./content
-          jupyter lite build --contents "./content" --output-dir "./dist"
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
-      - name: Show Directory Structure
-        run: |
-          echo "******************** pwd *********************************"
-          pwd
-          echo "********************* ls ********************************"
-          ls
-          echo "******************** ls ./dist *********************************"
-          ls ./dist
-
+          ### cp README.md content
+          jupyter lite build --contents "./content" --output-dir "./dist_private"
       
       - name: Deploy to Cloudflare Pages
         # https://github.com/cloudflare/wrangler-action
@@ -131,26 +127,20 @@ jobs:
             echo "*** end of pre commands ***"
           command: |
             pages project list
-            pages deploy "./dist" --project-name "lab" --branch main
+            pages deploy "./dist_private" --project-name "lab" --branch main
             pages deployment list --project-name "lab"
 
-#  deploy:
-#
-#    needs: build
-#
-#    if: github.ref == 'refs/heads/main'
-#
-#    permissions:
-#      pages: write
-#      id-token: write
-#
-#    environment:
-#      name: github-pages
-#      url: ${{ steps.deployment.outputs.page_url }}
-#
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Deploy to GitHub Pages
-#        id: deployment
-#        uses: actions/deploy-pages@v4
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
