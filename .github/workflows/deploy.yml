@@ -130,9 +130,9 @@ jobs:
             
             echo "*** end of pre commands ***"
           command: |
-            # pages project list
+            pages project list
             pages deploy "./dist" --project-name "lab" --branch main
-            # pages deployment list --project-name "lab"
+            pages deployment list --project-name "lab"
 
 #  deploy:
 #
