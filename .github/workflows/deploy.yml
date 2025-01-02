@@ -27,7 +27,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-
       - name: See environment after checkout
         run: |
           echo "******************** pwd *********************************"
@@ -36,28 +35,36 @@ jobs:
           ls
           echo "*****************************************************"
 
-
-      - name: Copy my notebooks from my private repo
+      - name: Ceckout my notebooks from my private repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.OBSIDIAN_PERSONAL_ACCESS_TOKEN }}
           repository: "postmike/ObsidianVault"
           path: "ObsidianVault"
           sparse-checkout: |
-            "Projects/attachments/fmcw/scripts/radar_model/fmcw_calculator_v1.2.ipynb"
-            "Projects/attachments/fmcw/scripts/chirp_vhdl_generator/chirp_table_generator_for_vhdl.ipynb"
+            Projects/attachments/fmcw/scripts/radar_model/fmcw_calculator_v1.2.ipynb
+            Projects/attachments/fmcw/scripts/chirp_vhdl_generator/chirp_table_generator_for_vhdl.ipynb
           sparse-checkout-cone-mode: false
 
-      - name: Create directory for copied files
+      - name: Setup JupyterLite "content" folder
         run: |
-          echo "*****************************************************"
-          mkdir my_notebooks
+
+          # Re-arrange default demo notebooks to move them from the root to a subfolder
+          mkdir -p "./content/demo"
+          mv "./content/javascript.ipynb" "./content/demo"
+          mv "./content/p5.ipynb"         "./content/demo"
+          mv "./content/python.ipynb"     "./content/demo"
+
+          # Add private user notebooks
+          mv "./ObsidianVault/Projects/attachments/fmcw/scripts/radar_model/fmcw_calculator_v1.2.ipynb" "./content"
+          mv "./ObsidianVault/Projects/attachments/fmcw/scripts/chirp_vhdl_generator/chirp_table_generator_for_vhdl.ipynb" "./content"
+
           echo "******************** ls *********************************"
           ls
-          echo "****************** ls ./ObsidianVault ***********************************"
-          ls ./ObsidianVault
+          echo "****************** ls -alR ./content ********************"
+          ls -alR ./content
           echo "*****************************************************"
-          # mv private-repo-files/*.json my_notebooks/
+
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -70,14 +77,8 @@ jobs:
 
       - name: Build the JupyterLite site
         run: |
-          echo "*****************************************************"
-          cat README.md 
-          echo "*****************************************************"
-          cp README.md content
-          echo "*****************************************************"
-          ls
-          echo "*****************************************************"
-          jupyter lite build --contents content --output-dir dist
+          cp README.md ./content
+          jupyter lite build --contents "./content" --output-dir "./dist"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -86,15 +87,16 @@ jobs:
 
       - name: Show Directory Structure
         run: |
-          echo "*****************************************************"
+          echo "******************** pwd *********************************"
           pwd
-          echo "*****************************************************"
+          echo "********************* ls ********************************"
           ls
-          echo "*****************************************************"
+          echo "******************** ls ./dist *********************************"
           ls ./dist
 
-      # https://github.com/cloudflare/wrangler-action
+      
       - name: Deploy to Cloudflare Pages
+        # https://github.com/cloudflare/wrangler-action
         uses: cloudflare/wrangler-action@v3
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -102,34 +104,34 @@ jobs:
           preCommands: |
             echo "*** pre commands ***"
             
-            # Make a copy of the website to modify it and to add the user notebooks
-            cp -r "./dist" "./dist2"
-
-            # Re-arrange the website files
-
-            # Move default demo notebooks from root folder to "demo" subfolder
-            mkdir -p "./dist2/api/contents/demo"
-            # mv "./dist2/api/contents/all.json" "./dist2/api/contents/demo"
-
-            # Replace paths:
-            #   from:       "path": "README.md",
-            #     to:       "path": "demo/README.md",
-            sed -i 's/\("path": "\)\(javascript.ipynb"\)/\1demo\/\2/' "./dist2/api/contents/all.json"
-            sed -i 's/\("path": "\)\(p5.ipynb"\)/\1demo\/\2/'         "./dist2/api/contents/all.json"
-            sed -i 's/\("path": "\)\(python.ipynb"\)/\1demo\/\2/'     "./dist2/api/contents/all.json"
-            sed -i 's/\("path": "\)\(README.md"\)/\1demo\/\2/'        "./dist2/api/contents/all.json"
-
-            ls "./dist2/api/contents"
-            cat "./dist2/api/contents/all.json"
-
-            # Add user notebooks to the root folder
-
-            # NOT DONE YET
+            ### # Make a copy of the website to modify it and to add the user notebooks
+            ### cp -r "./dist" "./dist2"
+            ### 
+            ### # Re-arrange the website files
+            ### 
+            ### # Move default demo notebooks from root folder to "demo" subfolder
+            ### mkdir -p "./dist2/api/contents/demo"
+            ### # mv "./dist2/api/contents/all.json" "./dist2/api/contents/demo"
+            ### 
+            ### # Replace paths:
+            ### #   from:       "path": "README.md",
+            ### #     to:       "path": "demo/README.md",
+            ### sed -i 's/\("path": "\)\(javascript.ipynb"\)/\1demo\/\2/' "./dist2/api/contents/all.json"
+            ### sed -i 's/\("path": "\)\(p5.ipynb"\)/\1demo\/\2/'         "./dist2/api/contents/all.json"
+            ### sed -i 's/\("path": "\)\(python.ipynb"\)/\1demo\/\2/'     "./dist2/api/contents/all.json"
+            ### sed -i 's/\("path": "\)\(README.md"\)/\1demo\/\2/'        "./dist2/api/contents/all.json"
+            ### 
+            ### ls "./dist2/api/contents"
+            ### cat "./dist2/api/contents/all.json"
+            ### 
+            ### # Add user notebooks to the root folder
+            ### 
+            ### # NOT DONE YET
             
             echo "*** end of pre commands ***"
           command: |
             # pages project list
-            pages deploy "./dist2" --project-name "lab" --branch main
+            pages deploy "./dist" --project-name "lab" --branch main
             # pages deployment list --project-name "lab"
 
 #  deploy:
