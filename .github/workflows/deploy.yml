@@ -66,6 +66,9 @@ jobs:
         with:
           path: ./dist
 
+      - name: Clean up
+        run: |
+          rm -rf "./dist"
 
       - name: Setup JupyterLite content for PRIVATE version of JupyterLite site 
         run: |
